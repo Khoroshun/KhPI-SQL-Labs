@@ -1,0 +1,36 @@
+version: '3.5'
+services:
+  db:
+    image: mariadb:10.3.32
+    container_name: mariadb
+    restart: on-failure
+    env_file: .env
+    environment:
+      MARIADB_DATABASE: ${DATABASE_DBNAME}
+      MARIADB_USER: ${DATABASE_USER}
+      MARIADB_PASSWORD: ${DATABASE_PASSWORD}
+      MARIADB_ROOT_PASSWORD: ${DATABASE_ROOT_PASSWORD}
+    ports:
+      - "3306:3306"
+    volumes:
+      - "dbdata:/var/lib/mysql"
+    networks:
+      - local
+  adminer:
+    image: adminer:latest
+    container_name: adminer
+    restart: always
+    environment:
+      MARIADB_ROOT_PASSWORD: example
+      ADMINER_DESIGN: nette
+    ports:
+      - "8080:8080"
+    networks:
+      - local
+networks:
+  local:
+    name: local
+
+volumes:
+  dbdata:
+    driver: local
